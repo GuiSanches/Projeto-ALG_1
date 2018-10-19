@@ -30,12 +30,15 @@ int insere_na_lista(Lista *L, obj_b x) {
 	return 1;
 }
 //Como os brinquedos sao transportados de uma esteira para uma caixa faria mais sentido criar 
-int remover(Lista *L, int k, Fila *C) {
+int remover(Lista *L, int k, Fila *C, int p) {
 	No *atual = L->inic;
 	No *aux;//No auxiliar para remocao
 	No *aux_novo_inic;//Marca novo inicio da lista para cada ciclo de remocao
 	int i, flag = 0, j = 0;
 	Pilha Caixa;
+	Pilha *ptrCaixa;
+
+	cria_pilha(&Caixa, p);
 
 	//Sub-rotina para remocao de um no. Poderia ser substituido por recursividade.
 	Remover:
@@ -44,7 +47,7 @@ int remover(Lista *L, int k, Fila *C) {
 		atual->ant->prox = atual->prox;			
 		aux = atual->prox;
 		//Insere brinquedo na Caixa(PILHA) e encaminha a Caixa cheia para a fila de caixas.
-		brinquedo_caixa(&Caixa, atual, C);
+		brinquedo_caixa(&Caixa, atual, C, p);
 		//Apaga o no, decrementa numero de elementos da lista e atualiza o ponteiro atual para proxima posicao valida	
 		free(atual);
 		L->tam--;		
@@ -73,21 +76,40 @@ int remover(Lista *L, int k, Fila *C) {
 		}		
 		goto Remover;
 	}//Remova o ultimo brinquedo da lista
-	else brinquedo_caixa(&Caixa, atual, C);		
+	else {  
+		ptrCaixa = &Caixa;
+		if(cheia_pilha(ptrCaixa)) {
+			printf("\n%s %s\n",atual->info.nSerie, atual->info.modelo);
+			insere_Fila(C, ptrCaixa);
+			free(ptrCaixa);
+			cria_pilha(ptrCaixa, p);			
+		}else {
+			printf("Teste 2 ");
+			printf("\n%s %s\n",atual->info.nSerie, atual->info.modelo);
+			push(ptrCaixa, &atual->info);
+			insere_Fila(C, ptrCaixa);
+			free(ptrCaixa);
+		}
+	}
+
 	free(atual);
 
 	return 0;
 }	
 
-int brinquedo_caixa(Pilha *caixa, No *brinquedo, Fila *Caixas) {
-	if(!cheia_pilha(caixa)) 		
-			push(caixa, &brinquedo->info);
-		else {
-			insere_Fila(Caixas, caixa);
-			free(caixa);
-			push(caixa, &brinquedo->info);
-		}
-	return 1;
+int brinquedo_caixa(Pilha *caixa, No *brinquedo, Fila *Caixas, int p) {
+	int cont = 0;
+
+	if(cheia_pilha(caixa)) {
+		insere_Fila(Caixas, caixa);
+		free(caixa);
+		cria_pilha(caixa, p);//cria nova caixa de brinquedos
+		push(caixa, &brinquedo->info);
+		return 1;	
+	}else	
+		push(caixa, &brinquedo->info);		
+		//Se o brinquedo nao tiver enchido a caixa retorna 0			
+	return 0;
 }
 
 int vazia_lista(Lista *L) {
@@ -193,13 +215,11 @@ void imprime_fila(Fila *F) {
 	cria_fila(&aux);
 	cria_pilha(&caixa, 100000);	
 
-	while(!vazia_fila(F)) {
-		remove_fila(F, &caixa);
+	while(remove_fila(F, &caixa)) {		
 		brinquedo = top(&caixa);	
 		tamanho = tam(&caixa);	
 		printf("%s %d %s %s %s %s %s %d \n",
-				"Caixa ", i, ": brinquedo ", brinquedo.nSerie, " ", brinquedo.modelo, "- quantidade ", tamanho);
-		printf("teste ");
+				"Caixa", i+1, ": brinquedo", brinquedo.nSerie, " ", brinquedo.modelo, "- quantidade ", tamanho);
 		i++;				
 	}
 }

@@ -5,7 +5,7 @@ int main() {
 	int k;//intervalo
 	int p;//capacidade da caixa
 	obj_b brinquedo;
-	Lista esteira;
+	Lista esteira;//esteira circular
 	Fila Caixas;
 
 	scanf("%d %d %d", &n, &k, &p);
@@ -17,9 +17,8 @@ int main() {
 		scanf(" %s %s", brinquedo.nSerie, brinquedo.modelo);
 		insere_na_lista(&esteira, brinquedo);
 	}
-	remover(&esteira, k, &Caixas);	
+	remover(&esteira, k, &Caixas, p);	
 	imprime_fila(&Caixas);
-
 
 	return 0;
 }
