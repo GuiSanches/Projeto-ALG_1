@@ -47,10 +47,10 @@ int remover(Lista *L, int k, Fila *C, int p) {
 		atual->ant->prox = atual->prox;			
 		aux = atual->prox;
 		//Insere brinquedo na Caixa(PILHA) e encaminha a Caixa cheia para a fila de caixas.
+																								printf("Teste 1 %d: \n%s %s\n\n", j, atual->info.nSerie, atual->info.modelo);
 		brinquedo_caixa(&Caixa, atual, C, p);
-		//Apaga o no, decrementa numero de elementos da lista e atualiza o ponteiro atual para proxima posicao valida	
-		free(atual);
-		L->tam--;		
+		//Apaga o no, decrementa numero de elementos da lista e atualiza o ponteiro atual para proxima posicao valida
+		free(atual);				
 		atual = aux;					
 	//Fim remocao do no
 	i = 1;	
@@ -58,19 +58,21 @@ int remover(Lista *L, int k, Fila *C, int p) {
 	while(i < k) {						
 		atual = atual->prox;		
 		i++;
+		//armazena inicio da proxima sequencia de remocoes, quando o intervalo(int k) sera decrescido.
+		if(!flag) {
+			aux_novo_inic = atual->ant;
+																								//printf("Teste 2: \n%s %s\n\n",aux_novo_inic->info.nSerie, aux_novo_inic->info.modelo);
+			flag = 1;
+		}
 	}
-	j+=i;
-	//armazena inicio da proxima sequencia de remocoes, quando o intervalo(int k) sera decrescido.
-	if(!flag) {
-		aux_novo_inic = atual->ant;
-		flag = 1;
-	}
+	j+=i;	
+	
 	//Se tiver pelo menos 2 elementos na esteira ainda falta remover brinquedos
 	if(L->tam > 1) {
 		//Se verdadeiro, todos os brinquedos ja foram removidos em um ciclo, decremente o K e INICIE UM NOVO CICLO DE REMOCAO.
 		if(j > L->tam) {
 			atual = aux_novo_inic;
-			k--;
+			L->tam -= j/i + 1;																										
 			flag = 0;
 			j = 0;			
 		}		
@@ -79,17 +81,16 @@ int remover(Lista *L, int k, Fila *C, int p) {
 	else {  
 		ptrCaixa = &Caixa;
 		if(cheia_pilha(ptrCaixa)) {
-			printf("\n%s %s\n",atual->info.nSerie, atual->info.modelo);
+																										printf("Cheia 4: \n%s %s\n\n",atual->info.nSerie, atual->info.modelo);		
 			insere_Fila(C, ptrCaixa);
 			free(ptrCaixa);
 			cria_pilha(ptrCaixa, p);			
 		}else {
-			printf("Teste 2 ");
-			printf("\n%s %s\n",atual->info.nSerie, atual->info.modelo);
-			push(ptrCaixa, &atual->info);
-			insere_Fila(C, ptrCaixa);
-			free(ptrCaixa);
+																										printf("!cheia 5: \n%s %s\n\n",atual->info.nSerie, atual->info.modelo);			
 		}
+		push(ptrCaixa, &atual->info);
+		insere_Fila(C, ptrCaixa);
+		free(ptrCaixa);
 	}
 
 	free(atual);
