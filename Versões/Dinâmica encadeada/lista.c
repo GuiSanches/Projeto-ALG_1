@@ -4,7 +4,7 @@ void cria_lista(Lista *L) {
 	L->inic = NULL;
 	L->fim = NULL;
 }
-
+//Lista circular
 int insere_na_lista(Lista *L, obj_b x) {
 	No *aux = (No*)malloc(sizeof(No));
 	if(aux == NULL)
@@ -26,7 +26,6 @@ int insere_na_lista(Lista *L, obj_b x) {
 		L->tam++;
 		L->inic->ant = L->fim;
 	}
-
 	return 1;
 }
 //Como os brinquedos sao transportados de uma esteira para uma caixa faria mais sentido criar 
@@ -100,7 +99,6 @@ int vazia_lista(Lista *L) {
 	return L->inic == NULL ? 1:0;
 }
 //TAD PILHA
-
 void cria_pilha(Pilha *P, int p) {
 	P->topo = NULL;
 	P->tam = 0;
@@ -125,7 +123,6 @@ int push(Pilha *P, obj_b *x) {
 			P->tam++;
 		}
 	}
-
 	return 1;
 }
 
@@ -142,7 +139,6 @@ int cheia_pilha(Pilha *P) {
 }
 
 //TAD FILA
-
 void cria_fila(Fila *F) {
 	F->inic = NULL;
 	F->fim = NULL;
@@ -167,7 +163,6 @@ int insere_Fila(Fila *F, Pilha *X) {
 			F->fim = aux;
 		}
 	}	
-	
 	return 1;
 }
 
@@ -184,7 +179,6 @@ int remove_fila(Fila *F, Pilha *dest) {
 		F->inic = F->inic->prox;
 		return 1;					
 	}
-
 	return 0;
 }
 
@@ -206,43 +200,3 @@ void imprime_fila(Fila *F) {
 		i++;				
 	}
 }
-/*
-int remover(Lista *L, int intervalo) {
-	No *atual = L->inic;
-	No *aux;
-	int i, j = 0;	
-	//Remove todos os nos da lista
-	do{	
-		//Remove K nos
-		Remover:
-			i = 1;
-			while(i < intervalo) {			
-				 atual = atual->prox;
-				 i++;
-			}
-			j += i;
-			//se nao percorreu a lista toda, falta brinquedos a remover
-			if(j < L->tam) {		
-				//Inicio Remocao do no					
-				atual->prox->ant = atual->ant;
-				atual->ant->prox = atual->prox;			
-				aux = atual->prox;
-				//Se caixa estiver cheia insere na fila e esvazia a caixa.
-				if(!push(&caixa,atual->info)) {
-					insere_Fila(&caixa, C);
-					esvazia_pilha(&caixa);
-				}
-				//remove No e atualiza ponteiro atual para o proximo
-				free(atual);		
-				atual = aux;
-				L->tam--;
-				//Fim remocao do no
-				goto Remover;
-			}
-		intervalo--;
-		j = 0;			
-		}while(!vazia_lista(L));//Se nao removeu todos os brinquedos ainda, continue removendo
-	//Atualiza inicio e fim da lista
-	L->inic = NULL;
-	L->Fim = NULL;	
-}*/

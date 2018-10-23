@@ -2,8 +2,8 @@
 #include <stdio.h>
 
 typedef struct{
-	char nSerie[20];
-	char modelo[20];
+	char nSerie[100];
+	char modelo[100];
 } obj_b;
 
 typedef struct NO {
