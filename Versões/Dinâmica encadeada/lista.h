@@ -38,7 +38,7 @@ typedef struct {
 void cria_lista(Lista*);
 int insere_na_lista(Lista*, obj_b);
 int remover(Lista*, int, Fila*, int);
-int brinquedo_caixa(Pilha*, No*, Fila*, int);
+int brinquedo_caixa(Pilha*, No*, Fila*, int, int);
 //remove_da_lista(i)
 //vazia_lista()
 

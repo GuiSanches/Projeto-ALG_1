@@ -34,89 +34,71 @@ int remover(Lista *L, int k, Fila *C, int p) {
 	No *atual = L->inic;
 	No *aux;//No auxiliar para remocao
 	No *aux_novo_inic;//Marca novo inicio da lista para cada ciclo de remocao
-	int i, flag = 0, j = 0;
-	Pilha Caixa;
+	int i, flag = 1;
+	Pilha Caixa; //Caixa de brinquedo
 	Pilha *ptrCaixa;
 
+	//Cria caixa de brinquedo
 	cria_pilha(&Caixa, p);
-
-	//Sub-rotina para remocao de um no. Poderia ser substituido por recursividade.
+	//Sub-rotina para remocao de um no. Poderia ser substituido por recursividade ou um do-while.
 	Remover:
 	//Inicio Remocao do no					
 		atual->prox->ant = atual->ant;
 		atual->ant->prox = atual->prox;			
-		aux = atual->prox;
-		//Insere brinquedo na Caixa(PILHA) e encaminha a Caixa cheia para a fila de caixas.
-																								printf("Teste 1 %d: \n%s %s\n\n", j, atual->info.nSerie, atual->info.modelo);
-		brinquedo_caixa(&Caixa, atual, C, p);
+		aux = atual->prox;			
+		//Insere brinquedo na Caixa(PILHA) e encaminha a Caixa para a fila de caixas quando necessario.																								
+		brinquedo_caixa(&Caixa, atual, C, p, L->tam);			
+		//printf("Removido: %s %s %d. Flag:%d\n", atual->info.modelo, atual->info.nSerie, k, flag);	PARA VER A REMOCAO ACONTECENDO DESCOMENTE ESTA LINHA
 		//Apaga o no, decrementa numero de elementos da lista e atualiza o ponteiro atual para proxima posicao valida
-		free(atual);				
-		atual = aux;					
+		free(atual);	
+		L->tam--;				
+		atual = aux;						
 	//Fim remocao do no
 	i = 1;	
 	//Procura k-esimo brinquedo a ser removido. Note que quando k for 1 nao havera a busca.
-	while(i < k) {						
-		atual = atual->prox;		
-		i++;
+	while(i < k) {	
 		//armazena inicio da proxima sequencia de remocoes, quando o intervalo(int k) sera decrescido.
-		if(!flag) {
-			aux_novo_inic = atual->ant;
-																								//printf("Teste 2: \n%s %s\n\n",aux_novo_inic->info.nSerie, aux_novo_inic->info.modelo);
-			flag = 1;
-		}
-	}
-	j+=i;	
-	
-	//Se tiver pelo menos 2 elementos na esteira ainda falta remover brinquedos
-	if(L->tam > 1) {
-		//Se verdadeiro, todos os brinquedos ja foram removidos em um ciclo, decremente o K e INICIE UM NOVO CICLO DE REMOCAO.
-		if(j > L->tam) {
-			atual = aux_novo_inic;
-			L->tam -= j/i + 1;																										
-			flag = 0;
-			j = 0;			
+		if(flag) {
+			aux_novo_inic = atual;																								
+			flag = 0;			
+		}/*Verifica se terminou um ciclo de remocao para isso a flag precisa sinalizar(flag == 0) que ha um ponteiro para o inicio de um novo ciclo.
+		   Se encerrou um ciclo o intervalo sera decrementado e o ponteiro atual inicializara a partir do inicio do novo ciclo */
+		else {
+			if(atual->prox == aux_novo_inic || atual == aux_novo_inic) {
+				flag = 1;
+				k--;
+				i = k + 1;
+			}
+			if(atual == aux_novo_inic)//nao deve atualizar ponteiro atual			
+				break;			
 		}		
+		atual = atual->prox;				
+		i++;		
+	}//Remova enquanto houver brinquedos na esteira
+	if(L->tam > 0)			
 		goto Remover;
-	}//Remova o ultimo brinquedo da lista
-	else {  
-		ptrCaixa = &Caixa;
-		if(cheia_pilha(ptrCaixa)) {
-																										printf("Cheia 4: \n%s %s\n\n",atual->info.nSerie, atual->info.modelo);		
-			insere_Fila(C, ptrCaixa);
-			free(ptrCaixa);
-			cria_pilha(ptrCaixa, p);			
-		}else {
-																										printf("!cheia 5: \n%s %s\n\n",atual->info.nSerie, atual->info.modelo);			
-		}
-		push(ptrCaixa, &atual->info);
-		insere_Fila(C, ptrCaixa);
-		free(ptrCaixa);
-	}
 
-	free(atual);
-
-	return 0;
+	return 0;	
 }	
 
-int brinquedo_caixa(Pilha *caixa, No *brinquedo, Fila *Caixas, int p) {
+int brinquedo_caixa(Pilha *caixa, No *brinquedo, Fila *Caixas, int p, int tam) {
 	int cont = 0;
 
 	if(cheia_pilha(caixa)) {
 		insere_Fila(Caixas, caixa);
 		free(caixa);
-		cria_pilha(caixa, p);//cria nova caixa de brinquedos
-		push(caixa, &brinquedo->info);
-		return 1;	
-	}else	
-		push(caixa, &brinquedo->info);		
-		//Se o brinquedo nao tiver enchido a caixa retorna 0			
+		cria_pilha(caixa, p);		
+	}
+	push(caixa, &brinquedo->info);
+	if(tam == 1) {
+		insere_Fila(Caixas, caixa);		
+	}		
 	return 0;
 }
 
 int vazia_lista(Lista *L) {
 	return L->inic == NULL ? 1:0;
 }
-
 //TAD PILHA
 
 void cria_pilha(Pilha *P, int p) {
@@ -224,57 +206,6 @@ void imprime_fila(Fila *F) {
 		i++;				
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /*
 int remover(Lista *L, int intervalo) {
 	No *atual = L->inic;
