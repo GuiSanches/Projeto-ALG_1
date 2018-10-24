@@ -22,9 +22,3 @@ int main() {
 
 	return 0;
 }
-/*
-cria_pilha();
-push(brinquedo);
-top();
-cheia_pilha();
-*/

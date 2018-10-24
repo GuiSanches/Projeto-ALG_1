@@ -39,7 +39,7 @@ int remover(Lista *L, int k, Fila *C, int p) {
 
 	//Cria caixa de brinquedo
 	cria_pilha(&Caixa, p);
-	//Sub-rotina para remocao de um no. Poderia ser substituido por recursividade ou um do-while.
+	//Sub-rotina para remocao de um no. Poderia ser substituido por recursividade, um do-while ou a funcao remover sugerida na especificao do projeto.
 	Remover:
 	//Inicio Remocao do no					
 		atual->prox->ant = atual->ant;
